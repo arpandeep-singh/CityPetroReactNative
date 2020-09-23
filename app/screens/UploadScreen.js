@@ -14,7 +14,7 @@ function UploadScreen({ progress = 0, visible = false, onDone, error }) {
             progress={progress}
             width={200}
           />
-        ) : !error ? (
+        ) : error ? (
           <LottieView
             autoPlay
             loop={false}

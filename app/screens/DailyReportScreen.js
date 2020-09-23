@@ -21,8 +21,6 @@ import FormImagePicker from "../components/forms/FormImagePicker";
 import * as Yup from "yup";
 
 import loadsApi from "../api/loads";
-import ErrorMessage from "../components/errorMessage";
-import ImageInput from "../components/ImageInput";
 import ImageInputList from "../components/ImageInputList";
 import AppFormField from "../components/forms/AppFormField";
 import UploadScreen from "./UploadScreen";
@@ -43,6 +41,7 @@ function DailyReportScreen({ navigation }) {
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
   const [uploadError, setUploadError] = useState(false);
+  const [result, setResult] = useState();
 
   const handleAdd = (uri) => {
     setImageUris([...imageUris, uri]);
@@ -52,20 +51,25 @@ function DailyReportScreen({ navigation }) {
   };
 
   const handleSubmit = async (load) => {
-    console.log(`Initial : ${uploadError}`);
     setUploadError(false);
     setProgress(0);
     setUploadVisible(true);
 
     load.images = imageUris;
-    load.station = station.stationId;
-    load.city = station.city;
+    // load.station = station.stationId;
+    // load.city = station.city;
+
     const result = await loadsApi.addLoad(load, (progress) =>
       setProgress(progress)
     );
-    setUploadError(!result.ok);
+    setResult(result);
 
-    // console.log(`After : ${uploadError} RESULT.OK: ${result.ok}`);
+    // if (!result.ok) {
+    //   alert(result.data.error);
+    // }
+    // setUploadError(false);
+
+    //setUploadError(!result.ok);
 
     // if (result.status !== 201) {
     //   setUploadVisible(false);
@@ -74,6 +78,18 @@ function DailyReportScreen({ navigation }) {
     // return setUploadVisible(false);
     //return alert(result.data.error);
   };
+
+  // const addLoadApi = useApi(loadsApi.addLoad());
+
+  // //.data due to data field in response
+  // let stations;
+  // if (!addLoadApi.error) {
+  //   stations = addLoadApi.data.data;
+  // }
+
+  // useEffect(() => {
+  //   addLoadApi.request();
+  // }, []);
 
   return (
     <Screen style={StyleSheet.screen}>
